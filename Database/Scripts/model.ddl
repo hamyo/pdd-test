@@ -1,25 +1,9 @@
-
-/*==============================================================*/
-/* Table: CLS_QUESTION_THEME                                    */
-/*==============================================================*/
-create table CLS_QUESTION_THEME (
-   CQTM_ID              INT                 not null,
-   CQTM_NAME            VARCHAR(150)         not null
-);
-
-comment on table CLS_QUESTION_THEME is 'Тема вопроса';
-comment on column CLS_QUESTION_THEME.CQTM_ID is 'ID темы вопроса';
-comment on column CLS_QUESTION_THEME.CQTM_NAME is 'Название';
-
-alter table CLS_QUESTION_THEME
-   add constraint PK_CQTM primary key (CQTM_ID);
-
 /*==============================================================*/
 /* Table: CLS_QUESTION_TYPE                                     */
 /*==============================================================*/
 create table CLS_QUESTION_TYPE (
-   CQT_ID               INT                 not null,
-   CQT_NAME             VARCHAR(40)          not null
+       CQT_ID               INT                 not null,
+       CQT_NAME             VARCHAR(50)          not null
 );
 
 comment on table CLS_QUESTION_TYPE is 'Тип вопроса';
@@ -27,14 +11,14 @@ comment on column CLS_QUESTION_TYPE.CQT_ID is 'ID';
 comment on column CLS_QUESTION_TYPE.CQT_NAME is 'Название';
 
 alter table CLS_QUESTION_TYPE
-   add constraint PK_CQT primary key (CQT_ID);
+    add constraint PK_CQT primary key (CQT_ID);
 
 /*==============================================================*/
 /* Table: CLS_ROLE                                              */
 /*==============================================================*/
 create table CLS_ROLE (
-   CR_ID                int                 not null,
-   CR_NAME              VARCHAR(30)          not null
+      CR_ID                int                 not null,
+      CR_NAME              VARCHAR(30)          not null
 );
 
 comment on table CLS_ROLE is 'Роль';
@@ -42,8 +26,22 @@ comment on column CLS_ROLE.CR_ID is 'ID роли';
 comment on column CLS_ROLE.CR_NAME is 'Имя роли';
 
 alter table CLS_ROLE
-   add constraint PK_CR primary key (CR_ID);
-   
+    add constraint PK_CR primary key (CR_ID);
+
+/*==============================================================*/
+/* Table: QUESTION_THEME                                    */
+/*==============================================================*/
+create table QUESTION_THEME (
+   QTM_ID              serial                 not null,
+   QTM_NAME            VARCHAR(150)         not null
+);
+
+comment on table QUESTION_THEME is 'Тема вопроса';
+comment on column QUESTION_THEME.QTM_ID is 'ID темы вопроса';
+comment on column QUESTION_THEME.QTM_NAME is 'Название';
+
+alter table QUESTION_THEME
+   add constraint PK_QTM primary key (QTM_ID);
 /*==============================================================*/
 /* Table: USR                                                   */
 /*==============================================================*/
@@ -99,17 +97,17 @@ alter table AVAILABLE_TEST
 /*==============================================================*/
 create table AVAILABLE_TEST_QUESTION_THEME (
    AT_ID                INT                 not null,
-   CQTM_ID				INT					not null,
-	ATQT_QUESTION_COUNT			smallint			not null
+   QTM_ID				INT					not null,
+    ATQT_QUESTION_COUNT			smallint			not null
 );
 
 comment on table AVAILABLE_TEST_QUESTION_THEME is 'Настройка количества вопросов для теста определенной темы';
 comment on column AVAILABLE_TEST_QUESTION_THEME.AT_ID is 'ID доступного теста';
-comment on column AVAILABLE_TEST_QUESTION_THEME.CQTM_ID is 'ID темы вопроса';
+comment on column AVAILABLE_TEST_QUESTION_THEME.QTM_ID is 'ID темы вопроса';
 comment on column AVAILABLE_TEST_QUESTION_THEME.ATQT_QUESTION_COUNT is 'Количество вопросов';
 
 alter table AVAILABLE_TEST_QUESTION_THEME
-   add constraint PK_ATQT primary key (AT_ID, CQTM_ID);
+   add constraint PK_ATQT primary key (AT_ID, QTM_ID);
 
 alter table AVAILABLE_TEST_QUESTION_THEME
    add constraint FK_ATQT_AT foreign key (AT_ID)
@@ -117,8 +115,8 @@ alter table AVAILABLE_TEST_QUESTION_THEME
       on delete restrict on update restrict;
 	  
 alter table AVAILABLE_TEST_QUESTION_THEME
-   add constraint FK_ATQT_QTM foreign key (CQTM_ID)
-      references CLS_QUESTION_THEME (CQTM_ID)
+   add constraint FK_ATQT_QTM foreign key (QTM_ID)
+      references QUESTION_THEME (QTM_ID)
       on delete restrict on update restrict;
 
 /*==============================================================*/
@@ -128,7 +126,6 @@ create table QUESTION (
    Q_ID                 bigserial                 not null,
    Q_DESCRIPTION               VARCHAR(300)         not null,
    CQT_ID               int                 not null,
-   CQTM_ID              int                 not null,
    Q_IMAGE              bytea             	null,
    Q_TEXT               TEXT                 null,
    Q_COMMENT            TEXT                 null
@@ -138,7 +135,6 @@ comment on table QUESTION is 'Вопрос';
 comment on column QUESTION.Q_ID is 'ID';
 comment on column QUESTION.Q_DESCRIPTION is 'Описание';
 comment on column QUESTION.CQT_ID is 'ID типа вопроса';
-comment on column QUESTION.CQTM_ID is 'ID темы вопроса';
 comment on column QUESTION.Q_IMAGE is 'Изображение';
 comment on column QUESTION.Q_TEXT is 'Текст вопроса';
 comment on column QUESTION.Q_COMMENT is 'Комментарий';
@@ -157,15 +153,15 @@ alter table QUESTION
 /*==============================================================*/
 create table QUESTION_QUESTION_THEME (
    Q_ID                		bigint                 not null,
-   CQTM_ID                 	INTEGER                 not null
+   QTM_ID                 	INTEGER                 not null
 );
 
 comment on table QUESTION_QUESTION_THEME is 'Связь вопроса и темы вопроса';
 comment on column QUESTION_QUESTION_THEME.Q_ID is 'ID вопроса';
-comment on column QUESTION_QUESTION_THEME.CQTM_ID is 'ID темы вопроса';
+comment on column QUESTION_QUESTION_THEME.QTM_ID is 'ID темы вопроса';
 
 alter table QUESTION_QUESTION_THEME
-   add constraint PK_QQT primary key (Q_ID, CQTM_ID);
+   add constraint PK_QQT primary key (Q_ID, QTM_ID);
    
 alter table QUESTION_QUESTION_THEME
    add constraint FK_QQT_Q foreign key (Q_ID)
@@ -173,8 +169,8 @@ alter table QUESTION_QUESTION_THEME
       on delete restrict on update restrict;
 
 alter table QUESTION_QUESTION_THEME
-   add constraint FK_QQT_CQTM foreign key (CQTM_ID)
-      references CLS_QUESTION_THEME (CQTM_ID)
+   add constraint FK_QQT_QTM foreign key (QTM_ID)
+      references QUESTION_THEME (QTM_ID)
       on delete restrict on update restrict;
 	  
 /*==============================================================*/
