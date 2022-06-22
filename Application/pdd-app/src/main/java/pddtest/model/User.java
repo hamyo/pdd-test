@@ -5,7 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -18,6 +19,9 @@ public class User {
 
     @Column(name = "u_login")
     private String login;
+
+    @Column(name = "u_password")
+    private String password;
 
     @Column(name = "u_lastname")
     private String lastname;
@@ -38,5 +42,21 @@ public class User {
     )
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<ClsRole> roles;
+    private Set<ClsRole> roles = new HashSet<>();
+
+    public boolean isNew() {
+        return this.id == null;
+    }
+
+    public User copyWithoutPassword() {
+        User user = new User();
+        user.setId(this.id);
+        user.setLogin(this.login);
+        user.setName(this.name);
+        user.setLastname(this.lastname);
+        user.setPatronymic(this.patronymic);
+        user.setActive(this.active);
+        this.getRoles().forEach(role -> user.getRoles().add(role));
+        return user;
+    }
 }

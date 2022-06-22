@@ -1,7 +1,6 @@
 package pddtest.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
@@ -28,5 +27,5 @@ public class Question {
 
     @ManyToOne
     @JoinColumn(name = "cqtm_id", nullable = false)
-    private ClsQuestionTheme theme;
+    private QuestionTheme theme;
 }

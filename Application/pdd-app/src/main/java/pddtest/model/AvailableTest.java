@@ -14,7 +14,7 @@ public class AvailableTest {
     @Id
     @Column(name = "at_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "at_name", nullable = false)
     private String name;
@@ -32,4 +32,8 @@ public class AvailableTest {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     List<AvailableTestQuestionTheme> questionThemes;
+
+    public boolean isNew() {
+        return this.id == null;
+    }
 }

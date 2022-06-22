@@ -13,6 +13,13 @@ import javax.persistence.Table;
 @Data
 @EqualsAndHashCode(of = {"id"})
 public class ClsRole implements Classifier<Integer> {
+    public ClsRole() {
+    }
+
+    public ClsRole(Integer id) {
+        this.id = id;
+    }
+
     @Id
     @Column(name = "cr_id")
     private Integer id;
