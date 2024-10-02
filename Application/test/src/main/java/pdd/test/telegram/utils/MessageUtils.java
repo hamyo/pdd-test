@@ -1,6 +1,7 @@
-package pdd.test.utils;
+package pdd.test.telegram.utils;
 
 import org.telegram.telegrambots.meta.api.objects.message.Message;
+import pdd.test.utils.BusinessException;
 
 public class MessageUtils {
     public static long getUserId(Message message) {

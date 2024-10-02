@@ -8,6 +8,8 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.ArrayList;
 import java.util.List;
 
+import static pdd.test.classifiers.Role.ADMIN;
+
 @Getter
 @Setter
 @Entity
@@ -39,5 +41,10 @@ public class Person {
             joinColumns=  @JoinColumn(name= "p_id", referencedColumnName= "id"),
             inverseJoinColumns= @JoinColumn(name= "cr_id", referencedColumnName= "id") )
     private List<ClsRole> roles = new ArrayList<>();
+
+    @Transient
+    public boolean isAdmin() {
+        return roles.stream().anyMatch(ADMIN::is);
+    }
 
 }
