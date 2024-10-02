@@ -1,309 +1,353 @@
-/*==============================================================*/
-/* Table: CLS_QUESTION_TYPE                                     */
-/*==============================================================*/
-create table CLS_QUESTION_TYPE (
-       CQT_ID               INT                 not null,
-       CQT_NAME             VARCHAR(50)          not null
-);
+CREATE TABLESPACE pddtest
+  OWNER postgres
+  LOCATION C:\tablespaces\pddtest;
 
-comment on table CLS_QUESTION_TYPE is 'Тип вопроса';
-comment on column CLS_QUESTION_TYPE.CQT_ID is 'ID';
-comment on column CLS_QUESTION_TYPE.CQT_NAME is 'Название';
+ALTER TABLESPACE pddtest
+  OWNER TO postgres;
+  
+CREATE DATABASE pddtest
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Russian_Russia.1251'
+    LC_CTYPE = 'Russian_Russia.1251'
+    LOCALE_PROVIDER = 'libc'
+    TABLESPACE = pddtest
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+	
+	
+CREATE TABLE IF NOT EXISTS public.cls_data_type
+(
+    cdt_id smallint NOT NULL,
+    cdt_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT pk_cdt PRIMARY KEY (cdt_id)
+        USING INDEX TABLESPACE pddtest
+)
 
-alter table CLS_QUESTION_TYPE
-    add constraint PK_CQT primary key (CQT_ID);
+TABLESPACE pddtest;
 
-/*==============================================================*/
-/* Table: CLS_ROLE                                              */
-/*==============================================================*/
-create table CLS_ROLE (
-      CR_ID                int                 not null,
-      CR_NAME              VARCHAR(30)          not null
-);
+ALTER TABLE IF EXISTS public.cls_data_type
+    OWNER to postgres;
+	
 
-comment on table CLS_ROLE is 'Роль';
-comment on column CLS_ROLE.CR_ID is 'ID роли';
-comment on column CLS_ROLE.CR_NAME is 'Имя роли';
+CREATE TABLE IF NOT EXISTS public.cls_question_type
+(
+    cqt_id smallint NOT NULL,
+    cqt_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT pk_cqt PRIMARY KEY (cqt_id)
+        USING INDEX TABLESPACE pddtest
+)
 
-alter table CLS_ROLE
-    add constraint PK_CR primary key (CR_ID);
+TABLESPACE pddtest;
 
-/*==============================================================*/
-/* Table: QUESTION_THEME                                    */
-/*==============================================================*/
-create table QUESTION_THEME (
-   QTM_ID              serial                 not null,
-   QTM_NAME            VARCHAR(150)         not null
-);
+ALTER TABLE IF EXISTS public.cls_question_type
+    OWNER to postgres;
+	
 
-comment on table QUESTION_THEME is 'Тема вопроса';
-comment on column QUESTION_THEME.QTM_ID is 'ID темы вопроса';
-comment on column QUESTION_THEME.QTM_NAME is 'Название';
+CREATE TABLE IF NOT EXISTS public.cls_role
+(
+    cr_id smallint NOT NULL,
+    cr_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT pk_cr PRIMARY KEY (cr_id)
+        USING INDEX TABLESPACE pddtest
+)
 
-alter table QUESTION_THEME
-   add constraint PK_QTM primary key (QTM_ID);
-/*==============================================================*/
-/* Table: USR                                                   */
-/*==============================================================*/
-create table USR (
-   U_ID                 SERIAL not null,
-   U_LOGIN              VARCHAR(25)          not null,
-   U_PASSWORD           VARCHAR(32)          not null,
-   U_LASTNAME           VARCHAR(30)          null,
-   U_NAME               VARCHAR(30)          null,
-   U_PATRONYMIC         VARCHAR(30)          null,
-   U_ACTIVE             BOOLEAN                 not null default false
-);
+TABLESPACE pddtest;
 
-comment on table USR is 'Пользователь';
-comment on column USR.U_ID is 'ID';
-comment on column USR.U_LOGIN is 'Логин';
-comment on column USR.U_PASSWORD is 'Пароль';
-comment on column USR.U_LASTNAME is 'Фамилия';
-comment on column USR.U_NAME is 'Имя';
-comment on column USR.U_PATRONYMIC is 'Отчество';
-comment on column USR.U_ACTIVE is 'Признак активности';
+ALTER TABLE IF EXISTS public.cls_role
+    OWNER to postgres;
+	
 
-alter table USR
-   add constraint PK_U primary key (U_ID);
+CREATE TABLE IF NOT EXISTS public.person
+(
+    p_id integer NOT NULL DEFAULT nextval('person_p_id_seq'::regclass),
+    p_lastname character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    p_name character varying(50) COLLATE pg_catalog."default",
+    p_patronymic character varying(50) COLLATE pg_catalog."default",
+    p_is_active boolean NOT NULL DEFAULT true,
+    p_telegram_id bigint,
+    CONSTRAINT pk_p PRIMARY KEY (p_id)
+        USING INDEX TABLESPACE pddtest
+)
 
-create unique index U_AK on USR (
-U_LOGIN
-);
+TABLESPACE pddtest;
 
-/*==============================================================*/
-/* Table: AVAILABLE_TEST                                        */
-/*==============================================================*/
-create table AVAILABLE_TEST (
-   AT_ID                SERIAL                 	not null,
-   AT_NAME              VARCHAR(50)          	not null,
-   AT_DESCRIPTION				text					null,
-   AT_DURATION          smallint                null,
-   AT_POSSIBLE_ERRORS   smallint                 null
-);
+ALTER TABLE IF EXISTS public.person
+    OWNER to postgres;
 
-comment on table AVAILABLE_TEST is 'Доступный тест';
-comment on column AVAILABLE_TEST.AT_ID is 'ID';
-comment on column AVAILABLE_TEST.AT_NAME is 'Название';
-comment on column AVAILABLE_TEST.AT_DESCRIPTION is 'Описание';
-comment on column AVAILABLE_TEST.AT_DURATION is 'Продолжительность в минутах';
-comment on column AVAILABLE_TEST.AT_POSSIBLE_ERRORS is 'Количество допустимых ошибок';
+CREATE INDEX IF NOT EXISTS i_telegram_id
+    ON public.person USING btree
+    (p_telegram_id ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pddtest;
+	
+	
+CREATE TABLE IF NOT EXISTS public.person_role
+(
+    p_id integer NOT NULL,
+    cr_id smallint NOT NULL,
+    CONSTRAINT pk_pr PRIMARY KEY (p_id, cr_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_pr_cr FOREIGN KEY (cr_id)
+        REFERENCES public.cls_role (cr_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT fk_pr_p FOREIGN KEY (p_id)
+        REFERENCES public.person (p_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
 
-alter table AVAILABLE_TEST
-   add constraint PK_AT primary key (AT_ID);
-   
-/*==============================================================*/
-/* Table: AVAILABLE_TEST_QUESTION_THEME                         */
-/*==============================================================*/
-create table AVAILABLE_TEST_QUESTION_THEME (
-   AT_ID                INT                 not null,
-   QTM_ID				INT					not null,
-    ATQT_QUESTION_COUNT			smallint			not null
-);
+TABLESPACE pddtest;
 
-comment on table AVAILABLE_TEST_QUESTION_THEME is 'Настройка количества вопросов для теста определенной темы';
-comment on column AVAILABLE_TEST_QUESTION_THEME.AT_ID is 'ID доступного теста';
-comment on column AVAILABLE_TEST_QUESTION_THEME.QTM_ID is 'ID темы вопроса';
-comment on column AVAILABLE_TEST_QUESTION_THEME.ATQT_QUESTION_COUNT is 'Количество вопросов';
+ALTER TABLE IF EXISTS public.person_role
+    OWNER to postgres;
+	
 
-alter table AVAILABLE_TEST_QUESTION_THEME
-   add constraint PK_ATQT primary key (AT_ID, QTM_ID);
 
-alter table AVAILABLE_TEST_QUESTION_THEME
-   add constraint FK_ATQT_AT foreign key (AT_ID)
-      references AVAILABLE_TEST (AT_ID)
-      on delete restrict on update restrict;
-	  
-alter table AVAILABLE_TEST_QUESTION_THEME
-   add constraint FK_ATQT_QTM foreign key (QTM_ID)
-      references QUESTION_THEME (QTM_ID)
-      on delete restrict on update restrict;
+CREATE TABLE IF NOT EXISTS public.available_test
+(
+    at_id integer NOT NULL DEFAULT nextval('available_test_at_id_seq'::regclass),
+    at_name text COLLATE pg_catalog."default" NOT NULL,
+    at_show_summary boolean NOT NULL DEFAULT true,
+    at_until_end boolean NOT NULL DEFAULT true,
+    at_show_after_answer boolean NOT NULL DEFAULT true,
+    CONSTRAINT pk_at PRIMARY KEY (at_id)
+        USING INDEX TABLESPACE pddtest
+)
 
-/*==============================================================*/
-/* Table: QUESTION                                              */
-/*==============================================================*/
-create table QUESTION (
-   Q_ID                 bigserial                 not null,
-   Q_DESCRIPTION               VARCHAR(300)         not null,
-   CQT_ID               int                 not null,
-   Q_IMAGE              bytea             	null,
-   Q_TEXT               TEXT                 null,
-   Q_COMMENT            TEXT                 null
-);
+TABLESPACE pddtest;
 
-comment on table QUESTION is 'Вопрос';
-comment on column QUESTION.Q_ID is 'ID';
-comment on column QUESTION.Q_DESCRIPTION is 'Описание';
-comment on column QUESTION.CQT_ID is 'ID типа вопроса';
-comment on column QUESTION.Q_IMAGE is 'Изображение';
-comment on column QUESTION.Q_TEXT is 'Текст вопроса';
-comment on column QUESTION.Q_COMMENT is 'Комментарий';
+ALTER TABLE IF EXISTS public.available_test
+    OWNER to postgres;
+	
+CREATE TABLE IF NOT EXISTS public.question_theme
+(
+    qt_id integer NOT NULL DEFAULT nextval('question_theme_qt_id_seq'::regclass),
+    qt_name character varying(150) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT pk_qt PRIMARY KEY (qt_id)
+        USING INDEX TABLESPACE pddtest
+)
 
-alter table QUESTION
-   add constraint PK_Q primary key (Q_ID);
+TABLESPACE pddtest;
 
-alter table QUESTION
-   add constraint FK_Q_CQT foreign key (CQT_ID)
-      references CLS_QUESTION_TYPE (CQT_ID)
-      on delete restrict on update restrict;
+ALTER TABLE IF EXISTS public.question_theme
+    OWNER to postgres;
 
-	  
-/*==============================================================*/
-/* Table: QUESTION_QUESTION_THEME                                                */
-/*==============================================================*/
-create table QUESTION_QUESTION_THEME (
-   Q_ID                		bigint                 not null,
-   QTM_ID                 	INTEGER                 not null
-);
+CREATE TABLE IF NOT EXISTS public.question_question_theme
+(
+    qt_id integer NOT NULL,
+    q_id bigint NOT NULL,
+    CONSTRAINT pk_qqt PRIMARY KEY (qt_id, q_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_question_theme_question FOREIGN KEY (q_id)
+        REFERENCES public.question (q_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
+    CONSTRAINT fk_question_theme_theme FOREIGN KEY (qt_id)
+        REFERENCES public.question_theme (qt_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+)
 
-comment on table QUESTION_QUESTION_THEME is 'Связь вопроса и темы вопроса';
-comment on column QUESTION_QUESTION_THEME.Q_ID is 'ID вопроса';
-comment on column QUESTION_QUESTION_THEME.QTM_ID is 'ID темы вопроса';
+TABLESPACE dclass_dbs;
 
-alter table QUESTION_QUESTION_THEME
-   add constraint PK_QQT primary key (Q_ID, QTM_ID);
-   
-alter table QUESTION_QUESTION_THEME
-   add constraint FK_QQT_Q foreign key (Q_ID)
-      references QUESTION (Q_ID)
-      on delete restrict on update restrict;
+ALTER TABLE IF EXISTS public.question_question_theme
+    OWNER to postgres;
+	
+CREATE TABLE IF NOT EXISTS public.question
+(
+    q_id bigint NOT NULL DEFAULT nextval('question_q_id_seq'::regclass),
+    q_description character varying(300) COLLATE pg_catalog."default",
+    q_text text COLLATE pg_catalog."default",
+    q_comment text COLLATE pg_catalog."default",
+    cqt_id smallint,
+    CONSTRAINT pk_q PRIMARY KEY (q_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_q_cqt FOREIGN KEY (cqt_id)
+        REFERENCES public.cls_question_type (cqt_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+)
 
-alter table QUESTION_QUESTION_THEME
-   add constraint FK_QQT_QTM foreign key (QTM_ID)
-      references QUESTION_THEME (QTM_ID)
-      on delete restrict on update restrict;
-	  
-/*==============================================================*/
-/* Table: ANSWER                                                */
-/*==============================================================*/
-create table ANSWER (
-   A_ID                 bigserial                 not null,
-   A_DESCRIPTION               VARCHAR(300)         	not null,
-   A_IS_RIGHT           BOOLEAN                 not null default false,
-   Q_ID                 bigint                 not null
-);
+TABLESPACE pddtest;
 
-comment on table ANSWER is 'Ответ';
-comment on column ANSWER.A_ID is 'ID';
-comment on column ANSWER.A_DESCRIPTION is 'Описание';
-comment on column ANSWER.A_IS_RIGHT is 'Признак правильности';
-comment on column ANSWER.Q_ID is 'ID вопроса';
+ALTER TABLE IF EXISTS public.question
+    OWNER to postgres;
+	
+CREATE TABLE IF NOT EXISTS public.question_data
+(
+    qd_id bigint NOT NULL DEFAULT nextval('question_data_qd_id_seq'::regclass),
+    cdt_id smallint NOT NULL,
+    data bytea NOT NULL,
+    q_id bigint,
+    CONSTRAINT pk_qd PRIMARY KEY (qd_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_qd_cdt FOREIGN KEY (cdt_id)
+        REFERENCES public.cls_data_type (cdt_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_qd_q FOREIGN KEY (q_id)
+        REFERENCES public.question (q_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE RESTRICT
+        NOT VALID
+)
 
-alter table ANSWER
-   add constraint PK_A primary key (A_ID);
-   
-alter table ANSWER
-   add constraint FK_A_Q foreign key (Q_ID)
-      references QUESTION (Q_ID)
-      on delete restrict on update restrict;
+TABLESPACE pddtest;
 
-/*==============================================================*/
-/* Table: USER_TEST                                             */
-/*==============================================================*/
-create table USER_TEST (
-   UT_ID                bigserial                 not null,
-   AT_ID                int                 null,
-   U_ID                 int                 not null,
-   UT_START_TIME        TIMESTAMP            not null default CURRENT_TIMESTAMP,
-   UT_END_TIME          TIMESTAMP            null,
-   UT_SUCCESS_COUNT     smallint                 null,
-   UT_ERROR_COUNT       smallint                 null
-);
+ALTER TABLE IF EXISTS public.question_data
+    OWNER to postgres;
+-- Index: i_qd_q_id
 
-comment on table USER_TEST is 'Тест пользователя';
-comment on column USER_TEST.AT_ID is 'ID доступного теста';
-comment on column USER_TEST.U_ID is 'ID пользователя';
-comment on column USER_TEST.UT_START_TIME is 'Начало теста';
-comment on column USER_TEST.UT_END_TIME is 'Окончание теста';
-comment on column USER_TEST.UT_SUCCESS_COUNT is 'Количество успешных ответов';
-comment on column USER_TEST.UT_ERROR_COUNT is 'Количество ошибок';
+-- DROP INDEX IF EXISTS public.i_qd_q_id;
 
-alter table USER_TEST
-   add constraint PK_UT primary key (UT_ID);
-   
-alter table USER_TEST
-   add constraint FK_UT_AT foreign key (AT_ID)
-      references AVAILABLE_TEST (AT_ID)
-      on delete restrict on update restrict;
+CREATE INDEX IF NOT EXISTS i_qd_q_id
+    ON public.question_data USING btree
+    (q_id ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pddtest;
+	
 
-alter table USER_TEST
-   add constraint FK_UT_U foreign key (U_ID)
-      references USR (U_ID)
-      on delete restrict on update restrict;
-	  
-/*==============================================================*/
-/* Table: USER_ANSWER                                           */
-/*==============================================================*/
-create table USER_ANSWER (
-   UT_ID                bigint                 not null,
-   A_ID                 bigint                 not null,
-   UA_TIME				TIMESTAMP				not null DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE IF NOT EXISTS public.available_test_theme
+(
+    at_id integer NOT NULL,
+    qt_id integer NOT NULL,
+    att_question_count smallint NOT NULL,
+    CONSTRAINT pk_att PRIMARY KEY (at_id, qt_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_available_test_available FOREIGN KEY (at_id)
+        REFERENCES public.available_test (at_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID,
+    CONSTRAINT fk_available_test_theme FOREIGN KEY (qt_id)
+        REFERENCES public.question_theme (qt_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
 
-comment on table USER_ANSWER is 'Выбранный пользователем ответ';
-comment on column USER_ANSWER.UT_ID is 'ID теста пользователя';
-comment on column USER_ANSWER.A_ID is 'ID ответа';
+TABLESPACE pddtest;
 
-alter table USER_ANSWER
-   add constraint PK_UA primary key (UT_ID, A_ID);
-   
-alter table USER_ANSWER
-   add constraint FK_UA_A foreign key (A_ID)
-      references ANSWER (A_ID)
-      on delete restrict on update restrict;
+ALTER TABLE IF EXISTS public.available_test_theme
+    OWNER to postgres;
+	
 
-alter table USER_ANSWER
-   add constraint FK_UA_UT foreign key (UT_ID)
-      references USER_TEST (UT_ID)
-      on delete restrict on update restrict;
+CREATE TABLE IF NOT EXISTS public.person_test
+(
+    pt_id bigint NOT NULL DEFAULT nextval('person_test_pt_id_seq'::regclass),
+    p_id integer NOT NULL,
+    pt_start_date timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    pt_finish_date timestamp without time zone,
+    pt_success smallint,
+    pt_error smallint,
+    at_id integer NOT NULL,
+    CONSTRAINT pk_pt PRIMARY KEY (pt_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_person_test_available_test FOREIGN KEY (at_id)
+        REFERENCES public.available_test (at_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE RESTRICT
+        NOT VALID,
+    CONSTRAINT fk_person_test_person FOREIGN KEY (p_id)
+        REFERENCES public.person (p_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+)
 
-/*==============================================================*/
-/* Table: USER_TEST_QUESTION                                    */
-/*==============================================================*/
-create table USER_TEST_QUESTION (
-   UT_ID                bigint                 not null,
-   Q_ID                 bigint                 not null
-);
+TABLESPACE pddtest;
 
-comment on table USER_TEST_QUESTION is 'Связь теста пользователя с конкретными вопросами';
-comment on column USER_TEST_QUESTION.UT_ID is 'ID теста пользователя';
-comment on column USER_TEST_QUESTION.Q_ID is 'ID вопроса';
+ALTER TABLE IF EXISTS public.person_test
+    OWNER to postgres;
+-- Index: i_pt_at_id
 
-alter table USER_TEST_QUESTION
-   add constraint PK_USER_TEST_QUESTION primary key (UT_ID, Q_ID);
-	  
-alter table USER_TEST_QUESTION
-   add constraint FK_UTQ_Q foreign key (Q_ID)
-      references QUESTION (Q_ID)
-      on delete restrict on update restrict;
+-- DROP INDEX IF EXISTS public.i_pt_at_id;
 
-alter table USER_TEST_QUESTION
-   add constraint FK_UTQ_UT foreign key (UT_ID)
-      references USER_TEST (UT_ID)
-      on delete restrict on update restrict;
+CREATE INDEX IF NOT EXISTS i_pt_at_id
+    ON public.person_test USING btree
+    (at_id ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pddtest;
+-- Index: i_pt_p_id
 
-/*==============================================================*/
-/* Table: USER_ROLE                                         */
-/*==============================================================*/
-create table USER_ROLE (
-   U_ID                 int                 not null,
-   CR_ID                int                 not null
-);
+-- DROP INDEX IF EXISTS public.i_pt_p_id;
 
-comment on table USER_ROLE is 'Связь пользователя и ролей';
-comment on column USER_ROLE.U_ID is 'ID пользователя';
-comment on column USER_ROLE.CR_ID is 'ID роли';
+CREATE INDEX IF NOT EXISTS i_pt_p_id
+    ON public.person_test USING btree
+    (p_id ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pddtest;
+	
+CREATE TABLE IF NOT EXISTS public.person_test_question
+(
+    ptq_id bigint NOT NULL DEFAULT nextval('person_test_question_ptq_id_seq'::regclass),
+    pt_id bigint NOT NULL,
+    q_id bigint NOT NULL,
+    ptq_answer text COLLATE pg_catalog."default",
+    ptq_is_correct boolean,
+    CONSTRAINT pk_ptq PRIMARY KEY (ptq_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_person_test_question_question FOREIGN KEY (q_id)
+        REFERENCES public.question (q_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_person_test_question_test FOREIGN KEY (pt_id)
+        REFERENCES public.person_test (pt_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE RESTRICT
+)
 
-alter table USER_ROLE
-   add constraint PK_UR primary key (U_ID, CR_ID);
-   
-alter table USER_ROLE
-   add constraint FK_UR_CR foreign key (CR_ID)
-      references CLS_ROLE (CR_ID)
-      on delete restrict on update restrict;
+TABLESPACE pddtest;
 
-alter table USER_ROLE
-   add constraint FK_UR_U foreign key (U_ID)
-      references USR (U_ID)
-      on delete restrict on update restrict;
+ALTER TABLE IF EXISTS public.person_test_question
+    OWNER to postgres;
+-- Index: i_ptq_pt_id
 
+-- DROP INDEX IF EXISTS public.i_ptq_pt_id;
+
+CREATE INDEX IF NOT EXISTS i_ptq_pt_id
+    ON public.person_test_question USING btree
+    (pt_id ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pddtest;
+-- Index: i_ptq_q_id
+
+-- DROP INDEX IF EXISTS public.i_ptq_q_id;
+
+CREATE INDEX IF NOT EXISTS i_ptq_q_id
+    ON public.person_test_question USING btree
+    (q_id ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pddtest;
+	
+	
+CREATE TABLE IF NOT EXISTS public.answer
+(
+    a_id bigint NOT NULL DEFAULT nextval('answer_a_id_seq'::regclass),
+    a_description text COLLATE pg_catalog."default",
+    q_id bigint NOT NULL,
+    a_is_right boolean NOT NULL DEFAULT false,
+    CONSTRAINT pk_a PRIMARY KEY (a_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_a_q FOREIGN KEY (q_id)
+        REFERENCES public.question (q_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+
+TABLESPACE pddtest;
+
+ALTER TABLE IF EXISTS public.answer
+    OWNER to postgres;
+-- Index: i_a_q_id
+
+-- DROP INDEX IF EXISTS public.i_a_q_id;
+
+CREATE INDEX IF NOT EXISTS i_a_q_id
+    ON public.answer USING btree
+    (q_id ASC NULLS LAST)
+    WITH (deduplicate_items=True)
+    TABLESPACE pddtest;
