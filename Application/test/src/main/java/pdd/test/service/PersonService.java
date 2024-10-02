@@ -8,6 +8,7 @@ import pdd.test.domain.Person;
 import pdd.test.repository.PersonRepository;
 import pdd.test.utils.BusinessException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,12 +16,24 @@ import java.util.Optional;
 public class PersonService {
     @Resource private PersonRepository personRepository;
 
-    private Optional<Person> findActivePersonByName(String lastname, String name) {
-        List<Person> persons = personRepository.getPersonsByActiveAndLastnameIgnoreCase(true, lastname);
-        if (StringUtils.isNotBlank(name) && !persons.isEmpty()) {
-            persons = persons.stream()
-                    .filter(person -> name.equalsIgnoreCase(person.getName()))
-                    .toList();
+    public boolean isPersonByTelegramIdExists(Long telegramId) {
+        if (telegramId == null) {
+            return false;
+        }
+
+        return personRepository.getPersonByTelegramId(telegramId) != null;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Person> findActivePersonByName(String lastname, String name) {
+        List<Person> persons = Collections.emptyList();
+        if (StringUtils.isNotBlank(lastname)) {
+            persons = personRepository.getPersonsByActiveAndLastnameIgnoreCase(true, lastname);
+            if (StringUtils.isNotBlank(name) && !persons.isEmpty()) {
+                persons = persons.stream()
+                        .filter(person -> name.equalsIgnoreCase(person.getName()))
+                        .toList();
+            }
         }
 
         if (persons.isEmpty()) {

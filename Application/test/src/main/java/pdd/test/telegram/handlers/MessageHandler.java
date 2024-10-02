@@ -5,5 +5,5 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 public interface MessageHandler {
     void handle(Message message);
-    boolean canHandle(String messageText);
+    boolean canHandle(Message message);
 }

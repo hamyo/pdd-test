@@ -38,8 +38,8 @@ public class Person {
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name= "person_role",
-            joinColumns=  @JoinColumn(name= "p_id", referencedColumnName= "id"),
-            inverseJoinColumns= @JoinColumn(name= "cr_id", referencedColumnName= "id") )
+            joinColumns=  @JoinColumn(name = "p_id", referencedColumnName = "p_id"),
+            inverseJoinColumns= @JoinColumn(name = "cr_id", referencedColumnName = "cr_id") )
     private List<ClsRole> roles = new ArrayList<>();
 
     @Transient
