@@ -1,14 +1,12 @@
 package pdd.test.telegram.handlers;
 
-import jakarta.annotation.Resource;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import pdd.test.domain.Person;
@@ -23,9 +21,10 @@ public class StartHandler implements MessageHandler {
 
     @SneakyThrows
     @Transactional(readOnly = true)
-    public void handle(@NonNull Message message) {
+    public void handle(Update update) {
+        Message message = update.getMessage();
         long chatId = message.getChatId();
-        long userId = MessageUtils.getUserId(message);
+        long userId = MessageUtils.getUserId(update);
 
         Person person = personRepository.getPersonByTelegramId(userId);
         if (person == null) {
@@ -40,13 +39,19 @@ public class StartHandler implements MessageHandler {
             if (person.isAdmin()) {
 
             } else {
-
+                SendMessage response = SendMessage.builder()
+                        .chatId(chatId)
+                        .text("Выберите, пожалуйста, дальнейшее действие")
+                        .replyMarkup(MessageUtils.getUserMenu(true))
+                        .build();
+                telegramClient.execute(response);
             }
         }
     }
 
     @Override
-    public boolean canHandle(Message message) {
-        return StringUtils.startsWithIgnoreCase(message.getText(), PersonCommand.START.getAction());
+    public boolean canHandle(Update update) {
+        return update.hasMessage() && update.getMessage().hasText() &&
+                StringUtils.startsWithIgnoreCase(update.getMessage().getText(), PersonCommand.START.getAction());
     }
 }

@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import pdd.test.telegram.handlers.MessageHandler;
+import pdd.test.telegram.utils.MessageUtils;
 import pdd.test.utils.BusinessException;
 
 import java.util.List;
@@ -37,28 +38,24 @@ public class TestBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
 
     @Override
     public void consume(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            long chatId = update.getMessage().getChatId();
-
+        try {
             try {
-                try {
-                    handlers.stream()
-                            .filter(handler -> handler.canHandle(update.getMessage()))
-                            .findFirst()
-                            .ifPresent(handler -> handler.handle(update.getMessage()));
-                } catch (BusinessException ex) {
-                    handleBusinessError(ex, chatId);
-                }
-            } catch (TelegramApiException e) {
-                log.error("Error on getting message. ", e);
+                handlers.stream()
+                        .filter(handler -> handler.canHandle(update))
+                        .findFirst()
+                        .ifPresent(handler -> handler.handle(update));
+            } catch (BusinessException ex) {
+                handleBusinessError(ex, update);
             }
+        } catch (TelegramApiException e) {
+            log.error("Error on getting message. ", e);
         }
     }
 
-    private void handleBusinessError(BusinessException ex, long chatId) throws TelegramApiException {
+    private void handleBusinessError(BusinessException ex, Update update) throws TelegramApiException {
         SendMessage message = SendMessage // Create a message object
                 .builder()
-                .chatId(chatId)
+                .chatId(MessageUtils.getChatId(update))
                 .text(ex.getMessage())
                 .build();
         telegramClient.execute(message);

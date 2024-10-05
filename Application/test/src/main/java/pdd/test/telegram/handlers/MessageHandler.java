@@ -1,9 +1,8 @@
 package pdd.test.telegram.handlers;
 
-import lombok.NonNull;
-import org.telegram.telegrambots.meta.api.objects.message.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface MessageHandler {
-    void handle(Message message);
-    boolean canHandle(Message message);
+    void handle(Update update);
+    boolean canHandle(Update update);
 }

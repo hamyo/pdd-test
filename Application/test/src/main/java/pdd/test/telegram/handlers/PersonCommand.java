@@ -4,7 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum PersonCommand {
-    START("/start"), NEW_TEST("/newtest"), CONTINUE_TEST("/continuetest");
+    START("/start"),
+    CHOOSE_TEST("/choosetest"),
+    NEW_TEST("/newtest"),
+    CONTINUE_TEST("/continuetest"),
+    RESULTS("/results");
 
     private String action;
 

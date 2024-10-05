@@ -16,12 +16,12 @@ import java.util.Optional;
 public class PersonService {
     @Resource private PersonRepository personRepository;
 
-    public boolean isPersonByTelegramIdExists(Long telegramId) {
-        if (telegramId == null) {
+    public boolean isPersonByTelegramIdExists(Long telegramUserId) {
+        if (telegramUserId == null) {
             return false;
         }
 
-        return personRepository.getPersonByTelegramId(telegramId) != null;
+        return personRepository.getPersonByTelegramId(telegramUserId) != null;
     }
 
     @Transactional(readOnly = true)
