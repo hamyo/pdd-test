@@ -16,95 +16,6 @@ CREATE DATABASE pddtest
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False;
 
-CREATE SEQUENCE IF NOT EXISTS public.answer_a_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 9223372036854775807
-    CACHE 1
-    OWNED BY answer.a_id;
-
-ALTER SEQUENCE public.answer_a_id_seq
-    OWNER TO postgres;
-	
-
-CREATE SEQUENCE IF NOT EXISTS public.available_test_at_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 2147483647
-    CACHE 1
-    OWNED BY available_test.at_id;
-
-ALTER SEQUENCE public.available_test_at_id_seq
-    OWNER TO postgres;
-	
-CREATE SEQUENCE IF NOT EXISTS public.person_p_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 2147483647
-    CACHE 1
-    OWNED BY person.p_id;
-
-ALTER SEQUENCE public.person_p_id_seq
-    OWNER TO postgres;
-	
-CREATE SEQUENCE IF NOT EXISTS public.person_test_pt_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 9223372036854775807
-    CACHE 1
-    OWNED BY person_test.pt_id;
-
-ALTER SEQUENCE public.person_test_pt_id_seq
-    OWNER TO postgres;
-	
-CREATE SEQUENCE IF NOT EXISTS public.person_test_question_ptq_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 9223372036854775807
-    CACHE 1
-    OWNED BY person_test_question.ptq_id;
-
-ALTER SEQUENCE public.person_test_question_ptq_id_seq
-    OWNER TO postgres;
-	
-CREATE SEQUENCE IF NOT EXISTS public.question_data_qd_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 9223372036854775807
-    CACHE 1
-    OWNED BY question_data.qd_id;
-
-ALTER SEQUENCE public.question_data_qd_id_seq
-    OWNER TO postgres;
-	
-CREATE SEQUENCE IF NOT EXISTS public.question_q_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 9223372036854775807
-    CACHE 1
-    OWNED BY question.q_id;
-
-ALTER SEQUENCE public.question_q_id_seq
-    OWNER TO postgres;
-	
-CREATE SEQUENCE IF NOT EXISTS public.question_theme_qt_id_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 2147483647
-    CACHE 1
-    OWNED BY question_theme.qt_id;
-
-ALTER SEQUENCE public.question_theme_qt_id_seq
-    OWNER TO postgres;
-	
 CREATE TABLE IF NOT EXISTS public.cls_data_type
 (
     cdt_id smallint NOT NULL,
@@ -146,6 +57,12 @@ TABLESPACE pddtest;
 ALTER TABLE IF EXISTS public.cls_role
     OWNER to postgres;
 	
+CREATE SEQUENCE IF NOT EXISTS public.person_p_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
 
 CREATE TABLE IF NOT EXISTS public.person
 (
@@ -163,6 +80,8 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.person
     OWNER to postgres;
+
+alter SEQUENCE public.person_p_id_seq OWNED BY person.p_id;
 
 CREATE INDEX IF NOT EXISTS i_telegram_id
     ON public.person USING btree
@@ -192,7 +111,15 @@ TABLESPACE pddtest;
 ALTER TABLE IF EXISTS public.person_role
     OWNER to postgres;
 	
+CREATE SEQUENCE IF NOT EXISTS public.available_test_at_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
 
+ALTER SEQUENCE public.available_test_at_id_seq
+    OWNER TO postgres;
 
 CREATE TABLE IF NOT EXISTS public.available_test
 (
@@ -209,6 +136,19 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.available_test
     OWNER to postgres;
+
+ALTER SEQUENCE public.available_test_at_id_seq OWNED BY available_test.at_id;
+
+	
+CREATE SEQUENCE IF NOT EXISTS public.question_theme_qt_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER SEQUENCE public.question_theme_qt_id_seq
+    OWNER TO postgres;
 	
 CREATE TABLE IF NOT EXISTS public.question_theme
 (
@@ -222,6 +162,18 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.question_theme
     OWNER to postgres;
+
+ALTER SEQUENCE public.question_theme_qt_id_seq OWNED BY question_theme.qt_id;
+
+CREATE SEQUENCE IF NOT EXISTS public.question_q_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.question_q_id_seq
+    OWNER TO postgres;
 	
 CREATE TABLE IF NOT EXISTS public.question
 (
@@ -243,6 +195,8 @@ TABLESPACE pddtest;
 ALTER TABLE IF EXISTS public.question
     OWNER to postgres;
 
+ALTER SEQUENCE public.question_q_id_seq OWNED BY question.q_id;
+
 CREATE TABLE IF NOT EXISTS public.question_question_theme
 (
     qt_id integer NOT NULL,
@@ -259,11 +213,20 @@ CREATE TABLE IF NOT EXISTS public.question_question_theme
         ON DELETE CASCADE
 )
 
-TABLESPACE dclass_dbs;
+TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.question_question_theme
     OWNER to postgres;
-	
+
+CREATE SEQUENCE IF NOT EXISTS public.question_data_qd_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.question_data_qd_id_seq
+    OWNER TO postgres;
 	
 CREATE TABLE IF NOT EXISTS public.question_data
 (
@@ -288,6 +251,8 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.question_data
     OWNER to postgres;
+
+ALTER SEQUENCE public.question_data_qd_id_seq OWNED BY question_data.qd_id;
 -- Index: i_qd_q_id
 
 -- DROP INDEX IF EXISTS public.i_qd_q_id;
@@ -322,7 +287,16 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.available_test_theme
     OWNER to postgres;
-	
+
+CREATE SEQUENCE IF NOT EXISTS public.person_test_pt_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.person_test_pt_id_seq
+    OWNER TO postgres;
 
 CREATE TABLE IF NOT EXISTS public.person_test
 (
@@ -351,6 +325,8 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.person_test
     OWNER to postgres;
+
+ALTER SEQUENCE public.person_test_pt_id_seq OWNED BY person_test.pt_id;
 -- Index: i_pt_at_id
 
 -- DROP INDEX IF EXISTS public.i_pt_at_id;
@@ -369,7 +345,16 @@ CREATE INDEX IF NOT EXISTS i_pt_p_id
     (p_id ASC NULLS LAST)
     WITH (deduplicate_items=True)
     TABLESPACE pddtest;
-	
+CREATE SEQUENCE IF NOT EXISTS public.person_test_question_ptq_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.person_test_question_ptq_id_seq
+    OWNER TO postgres;
+
 CREATE TABLE IF NOT EXISTS public.person_test_question
 (
     ptq_id bigint NOT NULL DEFAULT nextval('person_test_question_ptq_id_seq'::regclass),
@@ -393,6 +378,8 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.person_test_question
     OWNER to postgres;
+
+ALTER SEQUENCE public.person_test_question_ptq_id_seq OWNED BY person_test_question.ptq_id;
 -- Index: i_ptq_pt_id
 
 -- DROP INDEX IF EXISTS public.i_ptq_pt_id;
@@ -411,7 +398,17 @@ CREATE INDEX IF NOT EXISTS i_ptq_q_id
     (q_id ASC NULLS LAST)
     WITH (deduplicate_items=True)
     TABLESPACE pddtest;
-	
+
+
+CREATE SEQUENCE IF NOT EXISTS public.answer_a_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;
+
+ALTER SEQUENCE public.answer_a_id_seq
+    OWNER TO postgres;
 	
 CREATE TABLE IF NOT EXISTS public.answer
 (
@@ -428,6 +425,8 @@ CREATE TABLE IF NOT EXISTS public.answer
 )
 
 TABLESPACE pddtest;
+
+alter sequence public.answer_a_id_seq OWNED BY answer.a_id;
 
 ALTER TABLE IF EXISTS public.answer
     OWNER to postgres;
