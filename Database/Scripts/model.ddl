@@ -15,7 +15,95 @@ CREATE DATABASE pddtest
     TABLESPACE = pddtest
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False;
+
+CREATE SEQUENCE IF NOT EXISTS public.answer_a_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY answer.a_id;
+
+ALTER SEQUENCE public.answer_a_id_seq
+    OWNER TO postgres;
 	
+
+CREATE SEQUENCE IF NOT EXISTS public.available_test_at_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1
+    OWNED BY available_test.at_id;
+
+ALTER SEQUENCE public.available_test_at_id_seq
+    OWNER TO postgres;
+	
+CREATE SEQUENCE IF NOT EXISTS public.person_p_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1
+    OWNED BY person.p_id;
+
+ALTER SEQUENCE public.person_p_id_seq
+    OWNER TO postgres;
+	
+CREATE SEQUENCE IF NOT EXISTS public.person_test_pt_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY person_test.pt_id;
+
+ALTER SEQUENCE public.person_test_pt_id_seq
+    OWNER TO postgres;
+	
+CREATE SEQUENCE IF NOT EXISTS public.person_test_question_ptq_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY person_test_question.ptq_id;
+
+ALTER SEQUENCE public.person_test_question_ptq_id_seq
+    OWNER TO postgres;
+	
+CREATE SEQUENCE IF NOT EXISTS public.question_data_qd_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY question_data.qd_id;
+
+ALTER SEQUENCE public.question_data_qd_id_seq
+    OWNER TO postgres;
+	
+CREATE SEQUENCE IF NOT EXISTS public.question_q_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY question.q_id;
+
+ALTER SEQUENCE public.question_q_id_seq
+    OWNER TO postgres;
+	
+CREATE SEQUENCE IF NOT EXISTS public.question_theme_qt_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1
+    OWNED BY question_theme.qt_id;
+
+ALTER SEQUENCE public.question_theme_qt_id_seq
+    OWNER TO postgres;
 	
 CREATE TABLE IF NOT EXISTS public.cls_data_type
 (
