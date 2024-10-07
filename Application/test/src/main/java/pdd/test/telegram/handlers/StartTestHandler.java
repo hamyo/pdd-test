@@ -18,7 +18,7 @@ import pdd.test.telegram.utils.MessageUtils;
 
 @Service
 @RequiredArgsConstructor
-public class ChooseTestHandler implements MessageHandler {
+public class StartTestHandler implements MessageHandler {
     private final PersonService personService;
     private final TelegramClient telegramClient;
     private final AvailableTestRepository availableTestRepository;
@@ -48,9 +48,9 @@ public class ChooseTestHandler implements MessageHandler {
     public boolean canHandle(Update update) {
         return ((update.hasMessage() &&
                 update.getMessage().hasText() &&
-                StringUtils.equalsIgnoreCase(update.getMessage().getText(), TelegramCommand.CHOOSE_TEST.getAction())) ||
+                StringUtils.equalsIgnoreCase(update.getMessage().getText(), TelegramCommand.NEW_TEST.getAction())) ||
                 (update.hasCallbackQuery() &&
-                        StringUtils.equalsIgnoreCase(update.getCallbackQuery().getData(), TelegramCommand.CHOOSE_TEST.getAction()))) &&
+                        StringUtils.equalsIgnoreCase(update.getCallbackQuery().getData(), TelegramCommand.NEW_TEST.getAction()))) &&
                 personService.isPersonByTelegramIdExists(MessageUtils.getUserId(update));
     }
 }

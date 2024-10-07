@@ -1,12 +1,12 @@
 package pdd.test.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +32,7 @@ public class AvailableTest {
     @ColumnDefault("true")
     @Column(name = "at_show_after_answer", nullable = false)
     private boolean showAfterAnswer;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "availableTest", fetch = FetchType.LAZY)
+    private List<AvailableTestTheme> testThemes = new ArrayList<>();
 }

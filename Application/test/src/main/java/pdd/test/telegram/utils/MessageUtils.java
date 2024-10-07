@@ -2,18 +2,15 @@ package pdd.test.telegram.utils;
 
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
-import pdd.test.telegram.handlers.PersonCommand;
+import pdd.test.telegram.handlers.TelegramCommand;
 import pdd.test.utils.BusinessException;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class MessageUtils {
     public static long getUserId(Message message) {
@@ -23,13 +20,6 @@ public class MessageUtils {
         }
 
         return userId;
-    }
-
-    public static String getId(String text, Class ) {
-        return StringUtils.substring(
-                text,
-                StringUtils.lastIndexOf(text, "]"),
-                StringUtils.lastIndexOf(text, "]"));
     }
 
     public static Long tryGetUserId(Message message) {
@@ -67,7 +57,7 @@ public class MessageUtils {
     public static InlineKeyboardMarkup getUserMenu(boolean existCurrentTest) {
         InlineKeyboardButton btnNewTest = InlineKeyboardButton.builder()
                 .text("Новый тест")
-                .callbackData(PersonCommand.CHOOSE_TEST.getAction())
+                .callbackData(TelegramCommand.CHOOSE_TEST.getAction())
                 .build();
         InlineKeyboardRow row = new InlineKeyboardRow();
         row.add(btnNewTest);
@@ -75,14 +65,14 @@ public class MessageUtils {
         if (existCurrentTest) {
             InlineKeyboardButton btnContinueTest = InlineKeyboardButton.builder()
                     .text("Продолжить")
-                    .callbackData(PersonCommand.CONTINUE_TEST.getAction())
+                    .callbackData(TelegramCommand.CONTINUE_TEST.getAction())
                     .build();
             row.add(btnContinueTest);
         }
 
         InlineKeyboardButton btnResults = InlineKeyboardButton.builder()
                 .text("Результаты")
-                .callbackData(PersonCommand.RESULTS.getAction())
+                .callbackData(TelegramCommand.RESULTS.getAction())
                 .build();
 
         return new InlineKeyboardMarkup(Arrays.asList(

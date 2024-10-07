@@ -134,6 +134,26 @@ TABLESPACE pddtest;
 
 ALTER TABLE IF EXISTS public.question_theme
     OWNER to postgres;
+	
+CREATE TABLE IF NOT EXISTS public.question
+(
+    q_id bigint NOT NULL DEFAULT nextval('question_q_id_seq'::regclass),
+    q_description character varying(300) COLLATE pg_catalog."default",
+    q_text text COLLATE pg_catalog."default",
+    q_comment text COLLATE pg_catalog."default",
+    cqt_id smallint,
+    CONSTRAINT pk_q PRIMARY KEY (q_id)
+        USING INDEX TABLESPACE pddtest,
+    CONSTRAINT fk_q_cqt FOREIGN KEY (cqt_id)
+        REFERENCES public.cls_question_type (cqt_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+)
+
+TABLESPACE pddtest;
+
+ALTER TABLE IF EXISTS public.question
+    OWNER to postgres;
 
 CREATE TABLE IF NOT EXISTS public.question_question_theme
 (
@@ -156,25 +176,6 @@ TABLESPACE dclass_dbs;
 ALTER TABLE IF EXISTS public.question_question_theme
     OWNER to postgres;
 	
-CREATE TABLE IF NOT EXISTS public.question
-(
-    q_id bigint NOT NULL DEFAULT nextval('question_q_id_seq'::regclass),
-    q_description character varying(300) COLLATE pg_catalog."default",
-    q_text text COLLATE pg_catalog."default",
-    q_comment text COLLATE pg_catalog."default",
-    cqt_id smallint,
-    CONSTRAINT pk_q PRIMARY KEY (q_id)
-        USING INDEX TABLESPACE pddtest,
-    CONSTRAINT fk_q_cqt FOREIGN KEY (cqt_id)
-        REFERENCES public.cls_question_type (cqt_id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT
-)
-
-TABLESPACE pddtest;
-
-ALTER TABLE IF EXISTS public.question
-    OWNER to postgres;
 	
 CREATE TABLE IF NOT EXISTS public.question_data
 (
