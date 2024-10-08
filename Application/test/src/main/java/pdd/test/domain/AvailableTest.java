@@ -2,8 +2,11 @@ package pdd.test.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,12 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "available_test")
+@NoArgsConstructor
 public class AvailableTest {
+    public AvailableTest(Integer id) {
+        this.id = id;
+    }
+
     @Id
     @ColumnDefault("nextval('available_test_at_id_seq')")
     @Column(name = "at_id", nullable = false)
@@ -33,6 +41,7 @@ public class AvailableTest {
     @Column(name = "at_show_after_answer", nullable = false)
     private boolean showAfterAnswer;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "availableTest", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "availableTest")
+    @Fetch(FetchMode.SUBSELECT)
     private List<AvailableTestTheme> testThemes = new ArrayList<>();
 }

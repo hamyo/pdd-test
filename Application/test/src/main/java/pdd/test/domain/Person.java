@@ -2,6 +2,7 @@ package pdd.test.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -14,7 +15,12 @@ import static pdd.test.classifiers.Role.ADMIN;
 @Setter
 @Entity
 @Table(name = "person")
+@NoArgsConstructor
 public class Person {
+    public Person(Integer id) {
+        this.id = id;
+    }
+
     @Id
     @ColumnDefault("nextval('person_p_id_seq')")
     @Column(name = "p_id", nullable = false)

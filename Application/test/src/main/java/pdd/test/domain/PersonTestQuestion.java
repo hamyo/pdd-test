@@ -2,6 +2,7 @@ package pdd.test.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -11,7 +12,13 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @Entity
 @Table(name = "person_test_question")
+@NoArgsConstructor
 public class PersonTestQuestion {
+
+    public PersonTestQuestion(Question question) {
+        this.question = question;
+    }
+
     @Id
     @ColumnDefault("nextval('person_test_question_ptq_id_seq')")
     @Column(name = "ptq_id", nullable = false)

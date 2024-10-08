@@ -22,7 +22,19 @@ public class MessageUtils {
         return userId;
     }
 
-    public static Long tryGetUserId(Message message) {
+    public static String getMessageText(Update update) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            return update.getMessage().getText();
+        }
+
+        if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getData();
+        }
+
+        return null;
+    }
+
+        public static Long tryGetUserId(Message message) {
         if ((message == null || message.getFrom() == null)) {
             return null;
         }

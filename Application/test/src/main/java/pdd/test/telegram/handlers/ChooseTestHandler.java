@@ -46,11 +46,7 @@ public class ChooseTestHandler implements MessageHandler {
 
     @Override
     public boolean canHandle(Update update) {
-        return ((update.hasMessage() &&
-                update.getMessage().hasText() &&
-                StringUtils.equalsIgnoreCase(update.getMessage().getText(), TelegramCommand.CHOOSE_TEST.getAction())) ||
-                (update.hasCallbackQuery() &&
-                        StringUtils.equalsIgnoreCase(update.getCallbackQuery().getData(), TelegramCommand.CHOOSE_TEST.getAction()))) &&
+        return TelegramCommand.CHOOSE_TEST.is(update) &&
                 personService.isPersonByTelegramIdExists(MessageUtils.getUserId(update));
     }
 }

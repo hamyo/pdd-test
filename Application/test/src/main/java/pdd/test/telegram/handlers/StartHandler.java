@@ -51,7 +51,6 @@ public class StartHandler implements MessageHandler {
 
     @Override
     public boolean canHandle(Update update) {
-        return update.hasMessage() && update.getMessage().hasText() &&
-                StringUtils.startsWithIgnoreCase(update.getMessage().getText(), TelegramCommand.START.getAction());
+        return TelegramCommand.START.is(update);
     }
 }

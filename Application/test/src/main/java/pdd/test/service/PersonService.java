@@ -1,6 +1,7 @@
 package pdd.test.service;
 
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PersonService {
-    @Resource private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+
+    public Person getPersonByTelegramId(long telegramUserId) {
+        return personRepository.getPersonByTelegramId(telegramUserId);
+    }
 
     public boolean isPersonByTelegramIdExists(Long telegramUserId) {
         if (telegramUserId == null) {

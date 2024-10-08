@@ -1,14 +1,16 @@
 package pdd.test.domain;
 
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,14 +35,20 @@ public class PersonTest {
     private LocalDateTime finishDate;
 
     @Column(name = "pt_success")
+    @ColumnDefault("0")
     private Short success;
 
     @Column(name = "pt_error")
+    @ColumnDefault("0")
     private Short error;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "at_id", nullable = false)
     private AvailableTest availableTest;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personTest")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<PersonTestQuestion> testQuestions = new ArrayList<>();
 
 }
