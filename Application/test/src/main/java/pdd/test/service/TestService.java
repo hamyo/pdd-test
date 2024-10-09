@@ -12,6 +12,7 @@ import pdd.test.repository.PersonTestQuestionRepository;
 import pdd.test.repository.PersonTestRepository;
 import pdd.test.repository.QuestionRepository;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -31,7 +32,7 @@ public class TestService {
         personTest.setAvailableTest(availableTest);
 
         List<PersonTestQuestion> testQuestions = availableTest.getTestThemes().stream()
-                .flatMap(testTheme -> getQuestionIds(testTheme).stream())
+                .flatMap(testTheme -> getQuestionIds(testTheme).stream().sorted(Comparator.naturalOrder()))
                 .map(id -> new PersonTestQuestion(new Question(id)))
                 .toList();
 
@@ -41,14 +42,30 @@ public class TestService {
     }
 
     @Transactional
-    public void saveAnswer(Integer personTestQuestionId, String answerValue) {
+    public PersonTestQuestion saveAnswer(Integer personTestQuestionId, String answerValue) {
         PersonTestQuestion testQuestion = personTestQuestionRepository.findById(personTestQuestionId).get();
         questionHandlers.stream()
                 .filter(handler -> handler.canHandle(testQuestion.getQuestion().getType()))
                 .findFirst()
                 .ifPresent(handler -> handler.handle(testQuestion, answerValue));
+        PersonTest personTest = testQuestion.getPersonTest();
+        if (Boolean.TRUE.equals(testQuestion.getIsCorrect())) {
+            personTest.setSuccess((short) (personTest.getSuccess() + 1));
+        } else {
+            personTest.setError((short) (personTest.getError() + 1));
+            AvailableTest availableTest = personTest.getAvailableTest();
+            if (availableTest.getMaxError() != null &&
+                    availableTest.getMaxError().compareTo(personTest.getError()) <= 0) {
+                personTest.setFinishDate(LocalDateTime.now());
+            }
+        }
 
+        if (personTest.isNotFinished() &&
+                personTest.getTestQuestions().stream().noneMatch(question -> question.getIsCorrect() == null)) {
+            personTest.setFinishDate(LocalDateTime.now());
+        }
 
+        return testQuestion;
     }
 
     @NotNull

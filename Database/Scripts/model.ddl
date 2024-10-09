@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS public.available_test
     at_id integer NOT NULL DEFAULT nextval('available_test_at_id_seq'::regclass),
     at_name text COLLATE pg_catalog."default" NOT NULL,
     at_show_summary boolean NOT NULL DEFAULT true,
-    at_until_end boolean NOT NULL DEFAULT true,
     at_show_after_answer boolean NOT NULL DEFAULT true,
+	at_max_error smallint,
     CONSTRAINT pk_at PRIMARY KEY (at_id)
         USING INDEX TABLESPACE pddtest
 )

@@ -33,9 +33,8 @@ public class AvailableTest {
     @Column(name = "at_show_summary", nullable = false)
     private boolean showSummary;
 
-    @ColumnDefault("true")
-    @Column(name = "at_until_end", nullable = false)
-    private boolean untilEnd;
+    @Column(name = "at_max_error")
+    private Short maxError;
 
     @ColumnDefault("true")
     @Column(name = "at_show_after_answer", nullable = false)

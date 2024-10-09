@@ -2,6 +2,7 @@ package pdd.test.domain;
 
 import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,16 @@ public class PersonTest {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personTest")
     @Fetch(FetchMode.SUBSELECT)
+    @OrderBy("id asc")
     private List<PersonTestQuestion> testQuestions = new ArrayList<>();
 
+    @Transient
+    public boolean isFinished() {
+        return finishDate != null;
+    }
+
+    @Transient
+    public boolean isNotFinished() {
+        return !isFinished();
+    }
 }
