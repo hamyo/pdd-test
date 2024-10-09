@@ -28,7 +28,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation group: 'org.telegram', name: 'telegrambots-springboot-longpolling-starter', version: '7.10.0'
 	implementation group: 'org.telegram', name: 'telegrambots-client', version: '7.10.0'
-	implementation 'com.vdurmont:emoji-java:5.1.1'
 
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.17.0'
 

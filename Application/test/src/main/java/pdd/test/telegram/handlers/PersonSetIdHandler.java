@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,7 +20,7 @@ import pdd.test.telegram.utils.MessageUtils;
 
 import java.util.Optional;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class PersonSetIdHandler implements MessageHandler {
     private final PersonService personService;
@@ -39,7 +40,6 @@ public class PersonSetIdHandler implements MessageHandler {
     }
 
     @SneakyThrows
-    @Transactional
     public void handle(@NonNull Update update) {
         Message message = update.getMessage();
         long chatId = message.getChatId();

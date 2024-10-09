@@ -42,7 +42,7 @@ public class Person {
     @Column(name = "p_telegram_id")
     private Long telegramId;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(name= "person_role",
             joinColumns=  @JoinColumn(name = "p_id", referencedColumnName = "p_id"),
             inverseJoinColumns= @JoinColumn(name = "cr_id", referencedColumnName = "cr_id") )

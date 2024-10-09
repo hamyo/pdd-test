@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,7 +17,7 @@ import pdd.test.repository.AvailableTestRepository;
 import pdd.test.service.PersonService;
 import pdd.test.telegram.utils.MessageUtils;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ChooseTestHandler implements MessageHandler {
     private final PersonService personService;
@@ -24,7 +25,6 @@ public class ChooseTestHandler implements MessageHandler {
     private final AvailableTestRepository availableTestRepository;
 
     @SneakyThrows
-    @Transactional
     public void handle(@NonNull Update update) {
         long chatId = MessageUtils.getChatId(update);
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup(

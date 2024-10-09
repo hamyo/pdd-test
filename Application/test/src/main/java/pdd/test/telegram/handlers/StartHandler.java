@@ -3,6 +3,7 @@ package pdd.test.telegram.handlers;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,14 +14,13 @@ import pdd.test.domain.Person;
 import pdd.test.repository.PersonRepository;
 import pdd.test.telegram.utils.MessageUtils;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class StartHandler implements MessageHandler {
     private final PersonRepository personRepository;
     private final TelegramClient telegramClient;
 
     @SneakyThrows
-    @Transactional(readOnly = true)
     public void handle(Update update) {
         Message message = update.getMessage();
         long chatId = message.getChatId();

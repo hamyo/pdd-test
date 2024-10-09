@@ -40,4 +40,13 @@ public class PersonTestQuestion {
     @Column(name = "ptq_is_correct")
     private Boolean isCorrect;
 
+    @Transient
+    public boolean existAnswer() {
+        return answer != null;
+    }
+
+    @Transient
+    public boolean notExistAnswer() {
+        return existAnswer();
+    }
 }

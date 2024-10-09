@@ -24,7 +24,7 @@ public class TestService {
     private final List<QuestionHandler> questionHandlers;
 
     @Transactional
-    public PersonTest createPersonTest(@NonNull Integer personId, @NonNull Integer avalaibleTestId) {
+    public Long createPersonTest(@NonNull Integer personId, @NonNull Integer avalaibleTestId) {
         Person person = new Person(personId);
         AvailableTest availableTest = new AvailableTest(avalaibleTestId);
         PersonTest personTest = new PersonTest();
@@ -38,11 +38,11 @@ public class TestService {
 
         personTest.getTestQuestions().addAll(testQuestions);
         personTestRepository.save(personTest);
-        return personTest;
+        return personTest.getId();
     }
 
     @Transactional
-    public PersonTestQuestion saveAnswer(Integer personTestQuestionId, String answerValue) {
+    public void saveAnswer(Integer personTestQuestionId, String answerValue) {
         PersonTestQuestion testQuestion = personTestQuestionRepository.findById(personTestQuestionId).get();
         questionHandlers.stream()
                 .filter(handler -> handler.canHandle(testQuestion.getQuestion().getType()))
@@ -64,8 +64,6 @@ public class TestService {
                 personTest.getTestQuestions().stream().noneMatch(question -> question.getIsCorrect() == null)) {
             personTest.setFinishDate(LocalDateTime.now());
         }
-
-        return testQuestion;
     }
 
     @NotNull
