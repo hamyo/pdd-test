@@ -10,4 +10,5 @@ import java.util.List;
 public interface PersonRepository extends CrudRepository<Person, Integer> {
     Person getPersonByTelegramId(long telegramUserId);
     List<Person> getPersonsByActiveAndLastnameIgnoreCase(boolean active, String lastname);
+    List<Person> getPersonsByActive(boolean active);
 }

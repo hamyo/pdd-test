@@ -56,4 +56,8 @@ public enum TelegramCommand {
                 parts.length > 1 ? Integer.parseInt(parts[1]) : null,
                 parts.length > 2 ? parts[2] : null);
     }
+
+    public static String formUserForResultActionData(@NonNull Integer personId) {
+        return CHOOSE_USER_FOR_RESULT.getAction() + ID_SEPARATOR + personId;
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
@@ -51,6 +52,15 @@ public class Person {
     @Transient
     public boolean isAdmin() {
         return roles.stream().anyMatch(ADMIN::is);
+    }
+
+    @Transient
+    public String getFio() {
+        return StringUtils.trim(
+                lastname + " " +
+                        (StringUtils.isNotBlank(name) ? name + " " : "") +
+                        (StringUtils.isNotBlank(patronymic) ? patronymic : "")
+        );
     }
 
 }

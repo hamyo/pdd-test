@@ -52,4 +52,9 @@ public class PersonService {
 
         return Optional.of(persons.getFirst());
     }
+
+    @Transactional(readOnly = true)
+    public List<Person> findActivePersons() {
+        return personRepository.getPersonsByActive(true);
+    }
 }
