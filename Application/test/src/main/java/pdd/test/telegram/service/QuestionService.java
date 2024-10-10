@@ -1,7 +1,6 @@
 package pdd.test.telegram.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,18 +9,15 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
-import org.telegram.telegrambots.meta.generics.TelegramClient;
-import pdd.test.domain.*;
+import pdd.test.domain.PersonTest;
+import pdd.test.domain.PersonTestQuestion;
+import pdd.test.domain.Question;
+import pdd.test.domain.QuestionData;
 import pdd.test.repository.PersonTestRepository;
-import pdd.test.repository.QuestionRepository;
 import pdd.test.telegram.domain.Messages;
 import pdd.test.telegram.handlers.TelegramCommand;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import static pdd.test.classifiers.DataType.IMAGE;
 
@@ -30,13 +26,12 @@ import static pdd.test.classifiers.DataType.IMAGE;
 public class QuestionService {
     private final PersonTestRepository personTestRepository;
 
-    @SneakyThrows
     @Transactional(readOnly = true)
     public Messages handleQuestion(Long personTestId, long chatId) {
         Messages messages = new Messages();
         PersonTest personTest = personTestRepository.findById(personTestId).get();
         PersonTestQuestion testQuestion = personTest.getTestQuestions().stream()
-                .filter(PersonTestQuestion::existAnswer)
+                .filter(PersonTestQuestion::notExistAnswer)
                 .findFirst()
                 .orElse(null);
 

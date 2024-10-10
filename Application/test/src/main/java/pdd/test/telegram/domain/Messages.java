@@ -18,6 +18,10 @@ public class Messages {
         messages.add(sendPhoto);
     }
 
+    public void add(Messages messages) {
+        this.messages.addAll(messages.messages);
+    }
+
     public List<Object> getReadOnlyMessages() {
         return Collections.unmodifiableList(messages);
     }

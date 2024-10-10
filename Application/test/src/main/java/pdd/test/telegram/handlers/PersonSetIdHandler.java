@@ -49,17 +49,13 @@ public class PersonSetIdHandler implements MessageHandler {
         Optional<Person> person = personService.findActivePersonByName(lastnameName.getLeft(), lastnameName.getRight());
         if (person.isPresent()) {
             person.get().setTelegramId(userId);
-            // Показать меню в зависимости от роли
-            if (person.get().isAdmin()) {
 
-            } else {
-                SendMessage response = SendMessage.builder()
-                        .chatId(chatId)
-                        .text("Выберите, пожалуйста, дальнейшее действие")
-                        .replyMarkup(MessageUtils.getUserMenu(false))
-                        .build();
-                telegramClient.execute(response);
-            }
+            SendMessage response = SendMessage.builder()
+                    .chatId(chatId)
+                    .text("Выберите, пожалуйста, дальнейшее действие")
+                    .replyMarkup(MessageUtils.getMenu(person.get().isAdmin()))
+                    .build();
+            telegramClient.execute(response);
         }
     }
 

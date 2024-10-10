@@ -35,17 +35,12 @@ public class StartHandler implements MessageHandler {
                     .build();
             telegramClient.execute(response);
         } else {
-            // Показать меню в зависимости от роли
-            if (person.isAdmin()) {
-
-            } else {
-                SendMessage response = SendMessage.builder()
-                        .chatId(chatId)
-                        .text("Выберите, пожалуйста, дальнейшее действие")
-                        .replyMarkup(MessageUtils.getUserMenu(true))
-                        .build();
-                telegramClient.execute(response);
-            }
+            SendMessage response = SendMessage.builder()
+                    .chatId(chatId)
+                    .text("Выберите, пожалуйста, дальнейшее действие")
+                    .replyMarkup(MessageUtils.getMenu(person.isAdmin()))
+                    .build();
+            telegramClient.execute(response);
         }
     }
 

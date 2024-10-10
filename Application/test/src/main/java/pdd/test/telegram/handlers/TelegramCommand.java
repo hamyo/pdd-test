@@ -14,7 +14,10 @@ public enum TelegramCommand {
     NEW_TEST("/newtest"),
     ANSWER("/answer"),
     CONTINUE_TEST("/continuetest"),
-    RESULTS("/results");
+    USER_RESULTS("/results"),
+    ADMINISTRATION("/administration"),
+    CHOOSE_USER_FOR_RESULT("/chooseuserforresult"),
+    ;
 
     private static final String ID_SEPARATOR = ":";
 

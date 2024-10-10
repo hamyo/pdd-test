@@ -1,7 +1,6 @@
 package pdd.test.telegram.utils;
 
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -66,7 +65,34 @@ public class MessageUtils {
         return null;
     }
 
-    public static InlineKeyboardMarkup getUserMenu(boolean existCurrentTest) {
+    public static InlineKeyboardMarkup getMenu(boolean isAdmin) {
+        return isAdmin ? getMainAdminMenu() : getUserMenu();
+    }
+
+    public static InlineKeyboardMarkup getMainAdminMenu() {
+        InlineKeyboardButton btnNewTest = InlineKeyboardButton.builder()
+                .text("Новый тест")
+                .callbackData(TelegramCommand.CHOOSE_TEST.getAction())
+                .build();
+
+        InlineKeyboardButton btnResults = InlineKeyboardButton.builder()
+                .text("Результаты")
+                .callbackData(TelegramCommand.CHOOSE_USER_FOR_RESULT.getAction())
+                .build();
+
+        InlineKeyboardButton btnAdministration = InlineKeyboardButton.builder()
+                .text("Администрирование")
+                .callbackData(TelegramCommand.ADMINISTRATION.getAction())
+                .build();
+
+        return new InlineKeyboardMarkup(Arrays.asList(
+                new InlineKeyboardRow(btnNewTest),
+                new InlineKeyboardRow(btnResults),
+                new InlineKeyboardRow(btnAdministration)
+        ));
+    }
+
+    public static InlineKeyboardMarkup getUserMenu() {
         InlineKeyboardButton btnNewTest = InlineKeyboardButton.builder()
                 .text("Новый тест")
                 .callbackData(TelegramCommand.CHOOSE_TEST.getAction())
@@ -74,17 +100,9 @@ public class MessageUtils {
         InlineKeyboardRow row = new InlineKeyboardRow();
         row.add(btnNewTest);
 
-        if (existCurrentTest) {
-            InlineKeyboardButton btnContinueTest = InlineKeyboardButton.builder()
-                    .text("Продолжить")
-                    .callbackData(TelegramCommand.CONTINUE_TEST.getAction())
-                    .build();
-            row.add(btnContinueTest);
-        }
-
         InlineKeyboardButton btnResults = InlineKeyboardButton.builder()
                 .text("Результаты")
-                .callbackData(TelegramCommand.RESULTS.getAction())
+                .callbackData(TelegramCommand.USER_RESULTS.getAction())
                 .build();
 
         return new InlineKeyboardMarkup(Arrays.asList(
