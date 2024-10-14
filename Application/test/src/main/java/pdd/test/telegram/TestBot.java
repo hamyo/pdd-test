@@ -12,10 +12,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import pdd.test.telegram.handlers.MessageHandler;
+import pdd.test.telegram.handlers.MessageHandlerFactory;
 import pdd.test.telegram.utils.MessageUtils;
 import pdd.test.utils.BusinessException;
-
-import java.util.List;
 
 
 @Component
@@ -24,7 +23,7 @@ import java.util.List;
 public class TestBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
     @Value("${telegram.bot.token}") private String token;
     private final TelegramClient telegramClient;
-    private final List<MessageHandler> handlers;
+    private final MessageHandlerFactory handlerFactory;
 
     @Override
     public String getBotToken() {
@@ -40,10 +39,7 @@ public class TestBot implements SpringLongPollingBot, LongPollingSingleThreadUpd
     public void consume(Update update) {
         try {
             try {
-                handlers.stream()
-                        .filter(handler -> handler.canHandle(update))
-                        .findFirst()
-                        .ifPresent(handler -> handler.handle(update));
+                handlerFactory.handle(update);
             } catch (BusinessException ex) {
                 handleBusinessError(ex, update);
             }

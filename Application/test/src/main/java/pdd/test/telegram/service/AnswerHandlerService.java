@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import pdd.test.domain.*;
-import pdd.test.repository.AvailableTestRepository;
 import pdd.test.repository.PersonTestQuestionRepository;
-import pdd.test.repository.PersonTestRepository;
 import pdd.test.telegram.domain.AnswerCounter;
 import pdd.test.telegram.domain.Messages;
 import pdd.test.telegram.utils.MessageUtils;
@@ -17,9 +15,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AnswerService {
+public class AnswerHandlerService {
     private final PersonTestQuestionRepository personTestQuestionRepository;
-    private final QuestionService questionService;
+    private final QuestionHandlerService questionHandlerService;
 
     @Transactional(readOnly = true)
     public Messages handleAnswer(Integer personTestQuestionId, Long chatId) {
@@ -71,7 +69,7 @@ public class AnswerService {
                 messages.add(textMessage);
             }
         } else {
-            messages.add(questionService.handleQuestion(personTest.getId(), chatId));
+            messages.add(questionHandlerService.handleQuestion(personTest.getId(), chatId));
         }
 
         return messages;

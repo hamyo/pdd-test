@@ -15,7 +15,12 @@ public enum TelegramCommand {
     ANSWER("/answer"),
     CONTINUE_TEST("/continuetest"),
     USER_RESULTS("/results"),
+    MAIN_MENU("/mainmenu"),
     ADMINISTRATION("/administration"),
+    QUESTION("/question"),
+    USERS("/users"),
+    CREATE_USER("/createuser"),
+    INACTIVE_USER("/inactiveuser"),
     CHOOSE_USER_FOR_RESULT("/chooseuserforresult"),
     ;
 
@@ -27,9 +32,19 @@ public enum TelegramCommand {
         this.action = action;
     }
 
-    public boolean is(Update update) {
-        String actionName = StringUtils.substringBefore(MessageUtils.getMessageText(update), ID_SEPARATOR);
-        return StringUtils.equalsIgnoreCase(actionName, action);
+    public boolean isWithParams(Update update) {
+        String messageText = MessageUtils.getMessageText(update);
+        if (StringUtils.contains(messageText, ID_SEPARATOR)) {
+            String actionName = StringUtils.substringBefore(messageText, ID_SEPARATOR);
+            return StringUtils.equalsIgnoreCase(actionName, action);
+        }
+
+        return false;
+    }
+
+    public boolean isStrict(Update update) {
+        String messageText = MessageUtils.getMessageText(update);
+        return this.action.equalsIgnoreCase(messageText);
     }
 
     public static String formNewTestActionData(@NonNull Integer availableTestId) {
@@ -57,7 +72,11 @@ public enum TelegramCommand {
                 parts.length > 2 ? parts[2] : null);
     }
 
-    public static String formUserForResultActionData(@NonNull Integer personId) {
-        return CHOOSE_USER_FOR_RESULT.getAction() + ID_SEPARATOR + personId;
+    public static String formPersonForActionData(@NonNull Integer personId, @NonNull TelegramCommand command) {
+        return command.getAction() + ID_SEPARATOR + personId;
+    }
+
+    public static Integer getPersonIdForActionData(String data) {
+        return Integer.valueOf(StringUtils.substringAfterLast(data, ID_SEPARATOR));
     }
 }

@@ -23,7 +23,7 @@ import static pdd.test.classifiers.DataType.IMAGE;
 
 @Service
 @RequiredArgsConstructor
-public class QuestionService {
+public class QuestionHandlerService {
     private final PersonTestRepository personTestRepository;
 
     @Transactional(readOnly = true)

@@ -46,6 +46,6 @@ public class StartHandler implements MessageHandler {
 
     @Override
     public boolean canHandle(Update update) {
-        return TelegramCommand.START.is(update);
+        return TelegramCommand.START.isStrict(update);
     }
 }

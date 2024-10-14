@@ -1,6 +1,5 @@
-package pdd.test.telegram.handlers;
+package pdd.test.telegram.handlers.admin.person;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -10,32 +9,31 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
-import pdd.test.repository.AvailableTestRepository;
+import pdd.test.telegram.handlers.MessageHandler;
+import pdd.test.telegram.handlers.TelegramCommand;
 import pdd.test.telegram.service.CommonHandler;
 import pdd.test.telegram.utils.MessageUtils;
 
 @Component
 @RequiredArgsConstructor
-public class ChooseTestHandler implements MessageHandler {
+public class InactivePersonGetHandler implements MessageHandler {
     private final CommonHandler commonHandler;
     private final TelegramClient telegramClient;
-    private final AvailableTestRepository availableTestRepository;
 
     @SneakyThrows
-    public void handle(@NonNull Update update) {
-        long chatId = MessageUtils.getChatId(update);
-        InlineKeyboardMarkup markup = new InlineKeyboardMarkup(
-                availableTestRepository.findAll().stream()
-                .map(availableTest -> new InlineKeyboardRow(
-                        InlineKeyboardButton.builder()
-                        .text(availableTest.getName())
-                        .callbackData(TelegramCommand.formNewTestActionData(availableTest.getId()))
-                        .build())
-                ).toList());
+    @Override
+    public void handle(Update update) {
+        InlineKeyboardMarkup markup = commonHandler.getPersonsKeyboard(update, TelegramCommand.INACTIVE_USER);
+        markup.getKeyboard().add(
+            new InlineKeyboardRow(InlineKeyboardButton.builder()
+                    .text("⬅")
+                    .callbackData(TelegramCommand.USERS.getAction())
+                    .build())
+        );
 
         SendMessage response = SendMessage.builder()
-                .chatId(chatId)
-                .text("Выберите, пожалуйста, тест")
+                .chatId(MessageUtils.getChatId(update))
+                .text("Выберите, пожалуйста, пользователя")
                 .replyMarkup(markup)
                 .build();
         telegramClient.execute(response);
@@ -43,6 +41,11 @@ public class ChooseTestHandler implements MessageHandler {
 
     @Override
     public boolean canHandle(Update update) {
-        return commonHandler.isStrictCommandForUser(update, TelegramCommand.CHOOSE_TEST);
+        return commonHandler.isStrictCommandForAdmin(update, TelegramCommand.INACTIVE_USER);
+    }
+
+    @Override
+    public boolean canHandle(String action) {
+        return TelegramCommand.INACTIVE_USER.getAction().equalsIgnoreCase(action);
     }
 }

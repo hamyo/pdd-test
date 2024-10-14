@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pdd.test.classifiers.Role;
+import pdd.test.domain.ClsRole;
 import pdd.test.domain.Person;
 import pdd.test.repository.PersonRepository;
 import pdd.test.utils.BusinessException;
@@ -28,6 +30,15 @@ public class PersonService {
         }
 
         return personRepository.getPersonByTelegramId(telegramUserId) != null;
+    }
+
+    public boolean isPersonAdmin(Long telegramUserId) {
+        if (telegramUserId == null) {
+            return false;
+        }
+
+        Person person = personRepository.getPersonByTelegramId(telegramUserId);
+        return person != null && person.isAdmin();
     }
 
     @Transactional(readOnly = true)
@@ -56,5 +67,24 @@ public class PersonService {
     @Transactional(readOnly = true)
     public List<Person> findActivePersons() {
         return personRepository.getPersonsByActive(true);
+    }
+
+    @Transactional
+    public void inactivatePerson(Integer personId) {
+        personRepository.findById(personId)
+                .ifPresent(person -> person.setActive(false));
+    }
+
+    public void create(String lastName, String firstName, String patronymic, boolean isAdmin) {
+        Person person = new Person();
+        person.setLastname(lastName);
+        person.setName(firstName);
+        person.setPatronymic(patronymic);
+
+        person.getRoles().add(new ClsRole(Role.USER));
+        if (isAdmin) {
+            person.getRoles().add(new ClsRole(Role.ADMIN));
+        }
+        personRepository.save(person);
     }
 }
