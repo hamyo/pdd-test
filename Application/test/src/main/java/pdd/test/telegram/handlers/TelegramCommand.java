@@ -22,6 +22,7 @@ public enum TelegramCommand {
     CREATE_USER("/createuser"),
     INACTIVE_USER("/inactiveuser"),
     CHOOSE_USER_FOR_RESULT("/chooseuserforresult"),
+    UPLOAD_QUESTION_IMAGE("/uqimage"),
     ;
 
     private static final String ID_SEPARATOR = ":";

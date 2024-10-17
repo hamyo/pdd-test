@@ -23,7 +23,7 @@ public class NewTestHandler implements MessageHandler {
     @SneakyThrows
     public void handle(@NonNull Update update) {
         long chatId = MessageUtils.getChatId(update);
-        Person person = personService.getPersonByTelegramId(MessageUtils.getUserId(update));
+        Person person = personService.getPersonByTelegramId(MessageUtils.getTelegramUserId(update));
         Long personTestId = testService.createPersonTest(
                 person.getId(),
                 TelegramCommand.getAvailableTestId(MessageUtils.getMessageText(update)));

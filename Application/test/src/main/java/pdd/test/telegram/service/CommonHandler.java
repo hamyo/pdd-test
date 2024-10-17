@@ -36,22 +36,22 @@ public class CommonHandler {
 
     public boolean isStrictCommandForUser(Update update, TelegramCommand command) {
         return StringUtils.equalsIgnoreCase(command.getAction(), MessageUtils.getMessageText(update)) &&
-                personService.isPersonByTelegramIdExists(MessageUtils.getUserId(update));
+                personService.isPersonByTelegramIdExists(MessageUtils.getTelegramUserId(update));
     }
 
     public boolean isCommandWithParamsForUser(Update update, TelegramCommand command) {
         return command.isWithParams(update) &&
-                personService.isPersonByTelegramIdExists(MessageUtils.getUserId(update));
+                personService.isPersonByTelegramIdExists(MessageUtils.getTelegramUserId(update));
     }
 
     public boolean isStrictCommandForAdmin(Update update, TelegramCommand command) {
         return StringUtils.equalsIgnoreCase(command.getAction(), MessageUtils.getMessageText(update)) &&
-                personService.isPersonAdmin(MessageUtils.getUserId(update));
+                personService.isPersonAdmin(MessageUtils.getTelegramUserId(update));
     }
 
     public boolean isCommandWithParamsForAdmin(Update update, TelegramCommand command) {
         return command.isWithParams(update) &&
-                personService.isPersonAdmin(MessageUtils.getUserId(update));
+                personService.isPersonAdmin(MessageUtils.getTelegramUserId(update));
     }
 
     public InlineKeyboardMarkup getPersonsKeyboard(Update update, @NonNull TelegramCommand command) {

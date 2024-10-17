@@ -2,10 +2,7 @@ package pdd.test.telegram.handlers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
@@ -24,7 +21,7 @@ public class StartHandler implements MessageHandler {
     public void handle(Update update) {
         Message message = update.getMessage();
         long chatId = message.getChatId();
-        long userId = MessageUtils.getUserId(update);
+        long userId = MessageUtils.getTelegramUserId(update);
 
         Person person = personRepository.getPersonByTelegramId(userId);
         if (person == null) {

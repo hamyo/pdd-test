@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 import pdd.test.domain.Person;
 import pdd.test.service.PersonService;
 import pdd.test.telegram.handlers.MessageHandler;
-import pdd.test.telegram.handlers.MessageHandlerFactory;
 import pdd.test.telegram.handlers.TelegramCommand;
 import pdd.test.telegram.service.CommonHandler;
 import pdd.test.telegram.utils.MessageUtils;
@@ -20,19 +19,19 @@ public class InactivePersonPostHandler implements MessageHandler {
     private final CommonHandler commonHandler;
     private final TelegramClient telegramClient;
     private final PersonService personService;
-    private final MessageHandlerFactory handlerFactory;
+    private final InactivePersonGetHandler inactivePersonGetHandler;
 
     @SneakyThrows
     @Override
     public void handle(Update update) {
-        Person person = personService.getPersonByTelegramId(MessageUtils.getUserId(update));
+        Person person = personService.getPersonByTelegramId(MessageUtils.getTelegramUserId(update));
         personService.inactivatePerson(person.getId());
         SendMessage response = SendMessage.builder()
                 .chatId(MessageUtils.getChatId(update))
                 .text("Пользователь успешно деактивирован")
                 .build();
         telegramClient.execute(response);
-        handlerFactory.handle(TelegramCommand.INACTIVE_USER.getAction(), update);
+        inactivePersonGetHandler.handle(update);
     }
 
     @Override

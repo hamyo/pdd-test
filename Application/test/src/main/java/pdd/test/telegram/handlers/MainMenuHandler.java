@@ -21,7 +21,7 @@ public class MainMenuHandler implements MessageHandler {
     @SneakyThrows
     @Override
     public void handle(Update update) {
-        Person person = personService.getPersonByTelegramId(MessageUtils.getUserId(update));
+        Person person = personService.getPersonByTelegramId(MessageUtils.getTelegramUserId(update));
         SendMessage textMessage = SendMessage.builder()
                 .chatId(MessageUtils.getChatId(update))
                 .text("Выберите действие")

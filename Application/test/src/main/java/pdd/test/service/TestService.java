@@ -5,12 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pdd.test.classifiers.DataType;
 import pdd.test.domain.*;
 import pdd.test.question.QuestionHandler;
-import pdd.test.repository.PersonRepository;
-import pdd.test.repository.PersonTestQuestionRepository;
-import pdd.test.repository.PersonTestRepository;
-import pdd.test.repository.QuestionRepository;
+import pdd.test.repository.*;
+import pdd.test.utils.BusinessException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,6 +21,7 @@ public class TestService {
     private final PersonTestRepository personTestRepository;
     private final PersonTestQuestionRepository personTestQuestionRepository;
     private final List<QuestionHandler> questionHandlers;
+    private final QuestionDataRepository questionDataRepository;
 
     @Transactional
     public Long createPersonTest(@NonNull Integer personId, @NonNull Integer avalaibleTestId) {
@@ -98,5 +98,18 @@ public class TestService {
         }
 
         return new ArrayList<>(selectedQuestionIds);
+    }
+
+    public void saveQuestionData(long questionId, byte[] data) {
+        Optional<Question> question = questionRepository.findById(questionId);
+        if (question.isEmpty()) {
+            throw new BusinessException("Вопрос с id " + questionId + " не найден");
+        }
+
+        QuestionData questionData = new QuestionData();
+        questionData.setQuestion(question.get());
+        questionData.setData(data);
+        questionData.setType(new ClsDataType(DataType.IMAGE));
+        questionDataRepository.save(questionData);
     }
 }

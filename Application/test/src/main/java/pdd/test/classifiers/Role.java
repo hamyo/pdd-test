@@ -8,7 +8,8 @@ public enum Role {
     private Short id;
 
 
-    Role(short i) {
+    Role(short id) {
+        this.id = id;
     }
 
     public Short getId() {

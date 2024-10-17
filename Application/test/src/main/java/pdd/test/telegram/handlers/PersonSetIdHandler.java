@@ -6,15 +6,11 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import pdd.test.domain.Person;
-import pdd.test.repository.PersonRepository;
 import pdd.test.service.PersonService;
 import pdd.test.telegram.utils.MessageUtils;
 
@@ -43,7 +39,7 @@ public class PersonSetIdHandler implements MessageHandler {
     public void handle(@NonNull Update update) {
         Message message = update.getMessage();
         long chatId = message.getChatId();
-        long userId = MessageUtils.getUserId(message);
+        long userId = MessageUtils.getTelegramUserId(message);
 
         Pair<String, String> lastnameName = getLastnameAndName(message.getText());
         Optional<Person> person = personService.findActivePersonByName(lastnameName.getLeft(), lastnameName.getRight());

@@ -12,7 +12,7 @@ import pdd.test.utils.BusinessException;
 import java.util.Arrays;
 
 public class MessageUtils {
-    public static long getUserId(Message message) {
+    public static long getTelegramUserId(Message message) {
         Long userId = tryGetUserId(message);
         if (userId == null) {
             throw new BusinessException("Не получилось определить id пользователя телеграмм");
@@ -53,7 +53,7 @@ public class MessageUtils {
         throw new BusinessException("Не удалось определить id чата");
     }
 
-    public static Long getUserId(@NonNull Update update) {
+    public static Long getTelegramUserId(@NonNull Update update) {
         if (update.hasMessage()) {
             return update.getMessage().getFrom().getId();
         }

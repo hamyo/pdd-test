@@ -6,19 +6,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import pdd.test.service.PersonService;
 import pdd.test.telegram.handlers.MessageHandler;
-import pdd.test.telegram.handlers.MessageHandlerFactory;
 import pdd.test.telegram.handlers.TelegramCommand;
 import pdd.test.telegram.service.CommonHandler;
 import pdd.test.telegram.utils.MessageUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -27,7 +22,7 @@ public class CreateUserPostHandler implements MessageHandler {
     private final TelegramClient telegramClient;
     private final PersonService personService;
     private final CommonHandler commonHandler;
-    private final MessageHandlerFactory messageFactory;
+    private final CreateUserGetHandler createUserGetHandler;
 
     private final static String ADMIN_SYMBOL = "+";
 
@@ -61,7 +56,7 @@ public class CreateUserPostHandler implements MessageHandler {
                 .build();
         telegramClient.execute(response);
 
-        messageFactory.handle(TelegramCommand.CREATE_USER.getAction(), update);
+        createUserGetHandler.handle(update);
     }
 
     @Override
