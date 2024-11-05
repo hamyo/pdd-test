@@ -54,6 +54,10 @@ public class CommonHandler {
                 personService.isPersonAdmin(MessageUtils.getTelegramUserId(update));
     }
 
+    public boolean isCommandForAdmin(Update update, TelegramCommand command) {
+        return command.is(update) && personService.isPersonAdmin(MessageUtils.getTelegramUserId(update));
+    }
+
     public InlineKeyboardMarkup getPersonsKeyboard(Update update, @NonNull TelegramCommand command) {
         return new InlineKeyboardMarkup(
                 personService.findActivePersons().stream()

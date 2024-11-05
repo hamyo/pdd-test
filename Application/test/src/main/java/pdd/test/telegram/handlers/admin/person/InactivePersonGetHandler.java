@@ -41,11 +41,11 @@ public class InactivePersonGetHandler implements MessageHandler {
 
     @Override
     public boolean canHandle(Update update) {
-        return commonHandler.isStrictCommandForAdmin(update, TelegramCommand.INACTIVE_USER);
+        return commonHandler.isCommandForAdmin(update, TelegramCommand.INACTIVE_USER);
     }
 
     @Override
-    public boolean canHandle(String action) {
-        return TelegramCommand.INACTIVE_USER.getAction().equalsIgnoreCase(action);
+    public int getPriority() {
+        return 2;
     }
 }

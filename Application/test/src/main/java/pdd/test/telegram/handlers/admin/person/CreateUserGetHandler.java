@@ -43,12 +43,13 @@ public class CreateUserGetHandler implements MessageHandler {
     }
 
     @Override
-    public boolean canHandle(String action) {
-        return TelegramCommand.CREATE_USER.getAction().equalsIgnoreCase(action);
+    public boolean canHandle(Update update) {
+        return commonHandler.isCommandForAdmin(update, TelegramCommand.CREATE_USER);
     }
 
     @Override
-    public boolean canHandle(Update update) {
-        return commonHandler.isCommandWithParamsForAdmin(update, TelegramCommand.CREATE_USER);
+    public int getPriority() {
+        return 2;
     }
+
 }

@@ -48,6 +48,11 @@ public enum TelegramCommand {
         return this.action.equalsIgnoreCase(messageText);
     }
 
+    public boolean is(Update update) {
+        String messageText = MessageUtils.getMessageText(update);
+        return this.action.equalsIgnoreCase(StringUtils.substringBefore(messageText, ID_SEPARATOR));
+    }
+
     public static String formNewTestActionData(@NonNull Integer availableTestId) {
         return NEW_TEST.getAction() + ID_SEPARATOR + availableTestId;
     }

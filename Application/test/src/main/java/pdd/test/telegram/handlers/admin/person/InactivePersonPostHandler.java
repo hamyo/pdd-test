@@ -19,7 +19,6 @@ public class InactivePersonPostHandler implements MessageHandler {
     private final CommonHandler commonHandler;
     private final TelegramClient telegramClient;
     private final PersonService personService;
-    private final InactivePersonGetHandler inactivePersonGetHandler;
 
     @SneakyThrows
     @Override
@@ -31,7 +30,6 @@ public class InactivePersonPostHandler implements MessageHandler {
                 .text("Пользователь успешно деактивирован")
                 .build();
         telegramClient.execute(response);
-        inactivePersonGetHandler.handle(update);
     }
 
     @Override

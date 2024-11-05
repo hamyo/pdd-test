@@ -22,7 +22,6 @@ public class CreateUserPostHandler implements MessageHandler {
     private final TelegramClient telegramClient;
     private final PersonService personService;
     private final CommonHandler commonHandler;
-    private final CreateUserGetHandler createUserGetHandler;
 
     private final static String ADMIN_SYMBOL = "+";
 
@@ -55,8 +54,6 @@ public class CreateUserPostHandler implements MessageHandler {
                 .text("Пользователь успешно создан")
                 .build();
         telegramClient.execute(response);
-
-        createUserGetHandler.handle(update);
     }
 
     @Override
